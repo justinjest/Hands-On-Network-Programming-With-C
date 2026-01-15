@@ -14,10 +14,14 @@ int main() {
     }
 
   struct ifaddrs *address = addresses;
+
   while(address) {
+    if (address->ifa_addr == NULL) {
+      address = address->ifa_next;
+      continue;
+    }
     int family = address->ifa_addr->sa_family;
     if (family == AF_INET || family == AF_INET6) {
-
       printf("%s\t", address->ifa_name);
       printf("%s\t", family == AF_INET ? "IPv4" : "IPv6");
 
