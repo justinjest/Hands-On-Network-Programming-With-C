@@ -100,22 +100,18 @@ int main() {
             CLOSESOCKET(i);
             continue;
           }
-          int j;
-          for (j = 0; j < bytes_received; ++j) {
-            read[j] = toupper(read[j]);
+          SOCKET j;
+          for (j = 1; j < max_socket; ++j) {
+            if (FD_ISSET(j, &master)) {
+              if (j == socket_listen || j == i) {
+                continue;
+              } else {
+                send(j, read, bytes_received, 0);
+              }
+            }
           }
-          send(i, read, bytes_received, 0);
         }
-      } //if FD_SET
-    } // for i in max socket
+      }
+    }
   } // while
-
-  printf("Closing listening socket...\n");
-  CLOSESOCKET(socket_listen);
-#if defined(_WIN32)
-  WSACleanup();
-#endif
-
-  printf("Finished.\n");
-  return 0;
 } // main
